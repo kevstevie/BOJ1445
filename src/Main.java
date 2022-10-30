@@ -26,7 +26,7 @@ class Main {
 
         makeNearGarbage(maps);
 
-        
+
     }
 
     static int n;
@@ -50,5 +50,19 @@ class Main {
                 }
             }
         }
+    }
+}
+
+class Node{
+    int x;
+    int y;
+    int near;
+    int garbage;
+
+    public Node(int x, int y, int near, int garbage) {
+        this.x = x;
+        this.y = y;
+        this.near = near;
+        this.garbage = garbage;
     }
 }
