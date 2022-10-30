@@ -35,9 +35,6 @@ class Main {
 
         makeNearGarbage(maps);
 
-        
-
-
     }
     static boolean[][] visit;
     static char[][] maps;
@@ -45,7 +42,6 @@ class Main {
     static int m;
     static int[] dx = {1, 0, -1, 0};
     static int[] dy = {0, 1, 0, -1};
-    static int[] result = {Integer.MAX_VALUE, Integer.MAX_VALUE};
 
     static void makeNearGarbage(char[][] maps) {
         for (int i = 0; i < n; i++) {
@@ -64,9 +60,10 @@ class Main {
             }
         }
     }
+
 }
 
-class Node{
+class Node implements Comparable<Node>{
     int x;
     int y;
     int near;
@@ -77,5 +74,13 @@ class Node{
         this.y = y;
         this.near = near;
         this.garbage = garbage;
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        if (garbage == o.garbage) {
+            return Integer.compare(near, o.near);
+        }
+        return Integer.compare(garbage, o.garbage);
     }
 }
