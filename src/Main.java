@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 class Main {
@@ -15,20 +17,31 @@ class Main {
         int[] dx = {1, 0, -1, 0};
         int[] dy = {0, 1, 0, -1};
 
-        char[][] maps = new char[n][m];
-
+        maps = new char[n][m];
+        boolean[][] visit = new boolean[n][m];
+        
+        int startX = 0;
+        int startY = 0;
         for (int i = 0; i < n; i++) {
             String str = br.readLine();
             for (int j = 0; j < m; j++) {
                 maps[i][j] = str.charAt(j);
+                if (maps[i][j] == 'S') {
+                    startX = i;
+                    startY = j;
+                }
             }
         }
 
         makeNearGarbage(maps);
 
+        int[] answer = dfs(startX, startY, visit);
+
+        System.out.println(answer[0] +" "+ answer[1]);
+
 
     }
-
+    static char[][] maps;
     static int n;
     static int m;
     static int[] dx = {1, 0, -1, 0};
@@ -50,6 +63,40 @@ class Main {
                 }
             }
         }
+    }
+
+    static int[] dfs(int x, int y, boolean[][] visit) {
+        int[] result = {Integer.MAX_VALUE, Integer.MAX_VALUE};
+        Stack<Node> stack = new Stack<>();
+        System.out.println(n);
+        visit[x][y] = true;
+        stack.push(new Node(x, y, 0, 0));
+
+        while (!stack.isEmpty()) {
+            Node now = stack.pop();
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = now.x + dx[dir];
+                int ny = now.y + dy[dir];
+
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m || visit[nx][ny] || maps[nx][ny] == '.') {
+                    continue;
+                }
+                if (maps[nx][ny] == 'n') {
+                    stack.push(new Node(nx, ny, now.near + 1, now.garbage));
+                    visit[nx][ny] = true;
+                } else if (maps[nx][ny] == 'g') {
+                    stack.push(new Node(nx, ny, now.near, now.garbage + 1));
+                    visit[nx][ny] = true;
+                } else if (maps[nx][ny] == 'F') {
+                    if (now.garbage <= result[0] && now.near <= result[1]) {
+                        result[0] = now.garbage;
+                        result[1] = now.near;
+                    }
+                    visit = new boolean[n][m];
+                }
+            }
+        }
+        return result;
     }
 }
 
