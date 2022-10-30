@@ -1,10 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Main {
     public static void main(String[] args) throws IOException {
@@ -35,6 +32,10 @@ class Main {
 
         makeNearGarbage(maps);
 
+        int[] answer = dijkstra(startX, startY);
+
+        System.out.println(answer[0] + " " + answer[1]);
+
     }
     static boolean[][] visit;
     static char[][] maps;
@@ -59,6 +60,39 @@ class Main {
                 }
             }
         }
+    }
+    static int[] dijkstra(int x, int y) {
+        PriorityQueue<Node> q = new PriorityQueue<>();
+        int[] result = new int[2];
+        q.offer(new Node(x, y, 0, 0));
+        visit[x][y] = true;
+        loop : while (true) {
+            Node now = q.poll();
+
+            for (int i = 0; i < 4; i++) {
+                int nx = now.x + dx[i];
+                int ny = now.y + dy[i];
+
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m || visit[nx][ny]) {
+                    continue;
+                }
+                if (maps[nx][ny] == '.') {
+                    q.offer(new Node(nx, ny, now.near, now.garbage));
+                    visit[nx][ny] = true;
+                } else if (maps[nx][ny] == 'g') {
+                    q.offer(new Node(nx, ny, now.near, now.garbage + 1));
+                    visit[nx][ny] = true;
+                } else if (maps[nx][ny] == 'n') {
+                    q.offer(new Node(nx, ny, now.near + 1, now.garbage));
+                    visit[nx][ny] = true;
+                } else if (maps[nx][ny] == 'F') {
+                    result[0] = now.garbage;
+                    result[1] = now.near;
+                    break loop;
+                }
+            }
+        }
+        return result;
     }
 
 }
