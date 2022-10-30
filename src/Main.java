@@ -19,7 +19,7 @@ class Main {
 
         maps = new char[n][m];
         boolean[][] visit = new boolean[n][m];
-        
+
         int startX = 0;
         int startY = 0;
         for (int i = 0; i < n; i++) {
@@ -68,7 +68,7 @@ class Main {
     static int[] dfs(int x, int y, boolean[][] visit) {
         int[] result = {Integer.MAX_VALUE, Integer.MAX_VALUE};
         Stack<Node> stack = new Stack<>();
-        System.out.println(n);
+
         visit[x][y] = true;
         stack.push(new Node(x, y, 0, 0));
 
@@ -78,21 +78,26 @@ class Main {
                 int nx = now.x + dx[dir];
                 int ny = now.y + dy[dir];
 
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m || visit[nx][ny] || maps[nx][ny] == '.') {
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m || visit[nx][ny]) {
                     continue;
                 }
                 if (maps[nx][ny] == 'n') {
                     stack.push(new Node(nx, ny, now.near + 1, now.garbage));
+                    System.out.println("pushed");
                     visit[nx][ny] = true;
                 } else if (maps[nx][ny] == 'g') {
                     stack.push(new Node(nx, ny, now.near, now.garbage + 1));
                     visit[nx][ny] = true;
-                } else if (maps[nx][ny] == 'F') {
+                } else if (maps[nx][ny] == '.') {
+                    stack.push(new Node(nx, ny, now.near, now.garbage));
+                    visit[nx][ny] = true;
+                }else if (maps[nx][ny] == 'F') {
                     if (now.garbage <= result[0] && now.near <= result[1]) {
                         result[0] = now.garbage;
                         result[1] = now.near;
                     }
                     visit = new boolean[n][m];
+                    visit[x][y] = true;
                 }
             }
         }
